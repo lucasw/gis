@@ -63,6 +63,8 @@ def process(input_filename, output_filename):
     pop_max = float("-inf")
     pop_tot = 0
 
+    census = []
+    
     for j, feat in enumerate( lyr ):
 
         pop = feat.GetField(pop_field)
@@ -77,6 +79,8 @@ def process(input_filename, output_filename):
         x2 = max(x2, bb[2])
         y2 = max(y2, bb[3])
 
+        census.append((bb, geom, pop))
+
         pop_min = min(pop_min, pop)
         pop_max = max(pop_max, pop)
         pop_tot += pop
@@ -86,9 +90,16 @@ def process(input_filename, output_filename):
         #    print "%s/%s (%0.2f%%)"%(j+1,n_features,100*((j+1)/float(n_features)))
         #    print "population ", pop
         #    print bb
-    
+   
+    print j
     print "bounding box ", x1, y1, x2, y2
     print "pop ", pop_tot, ", bounds ", pop_min, pop_max
+    
+    print len(census)
+    print census[0]
+    print census[0][0]
+    #for block in census:
+    #    print census[2]
 
 if __name__=='__main__':
     if len(sys.argv) < 3:
