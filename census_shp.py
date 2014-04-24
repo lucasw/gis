@@ -3,6 +3,7 @@
 
 import sys
 import ogr
+import pygame
 
 def make_ogr_point(x,y):
     return ogr.Geometry(wkt="POINT(%f %f)"%(x,y))
