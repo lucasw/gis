@@ -21,7 +21,7 @@ US53 is Washington State.
 
 https://gist.github.com/anonymous/4385412
 
-    sudo apt-get install libgdal-dev 
+    sudo apt-get install python-gdal 
     
 ~~python-shapely~~
 
