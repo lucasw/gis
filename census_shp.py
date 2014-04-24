@@ -57,6 +57,10 @@ def process(input_filename, output_filename):
     y1 = float("inf")
     x2 = float("-inf")
     y2 = float("-inf")
+    
+    pop_min = float("inf")
+    pop_max = float("-inf")
+    pop_tot = 0
 
     for j, feat in enumerate( lyr ):
 
@@ -72,13 +76,18 @@ def process(input_filename, output_filename):
         x2 = max(x2, bb[2])
         y2 = max(y2, bb[3])
 
-        if j%1000==0:
-            #conn.commit()
-            print "%s/%s (%0.2f%%)"%(j+1,n_features,100*((j+1)/float(n_features)))
-            print "population ", pop
-            print bb
+        pop_min = min(pop_min, pop)
+        pop_max = max(pop_max, pop)
+        pop_tot += pop
+
+        #if j%1000==0:
+        #    #conn.commit()
+        #    print "%s/%s (%0.2f%%)"%(j+1,n_features,100*((j+1)/float(n_features)))
+        #    print "population ", pop
+        #    print bb
     
     print "bounding box ", x1, y1, x2, y2
+    print "pop ", pop_tot, ", bounds ", pop_min, pop_max
 
 if __name__=='__main__':
     if len(sys.argv) < 3:
