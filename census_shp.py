@@ -1,4 +1,5 @@
-# from https://gist.github.com/anonymous/4385412#file-makedots-py
+# basic code from https://gist.github.com/anonymous/4385412#file-makedots-py
+
 
 import sys
 import ogr
@@ -7,10 +8,10 @@ def make_ogr_point(x,y):
     return ogr.Geometry(wkt="POINT(%f %f)"%(x,y))
 
 def get_bbox(geom):
-    ll=float("inf")
-    bb=float("inf")
-    rr=float("-inf")
-    tt=float("-inf")
+    x1=float("inf")
+    y1=float("inf")
+    x2=float("-inf")
+    y2=float("-inf")
 
     ch = geom.ConvexHull()
     if not ch:
@@ -23,13 +24,12 @@ def get_bbox(geom):
         return None
 
     for x,y in pts:
-        ll = min(ll,x)
-        rr = max(rr,x)
-        bb = min(bb,y)
-        tt = max(tt,y)
+        x1 = min(x1,x)
+        y1 = min(y1,y)
+        x2 = max(x2,x)
+        y2 = max(y2,y)
         
-    return (ll,bb,rr,tt)
-
+    return (x1, y1, x2, y2)
 
 def process(input_filename, output_filename):
 
@@ -51,25 +51,34 @@ def process(input_filename, output_filename):
         if defn.GetName()=="POP10":
             pop_field = i
 
-    # set up the output file
-    #conn = sqlite3.connect( output_filename )
-    #c = conn.cursor()
-    #c.execute( "create table if not exists people (x real, y real, quadkey text)" )
-
     n_features = len(lyr)
+
+    x1 = float("inf")
+    y1 = float("inf")
+    x2 = float("-inf")
+    y2 = float("-inf")
 
     for j, feat in enumerate( lyr ):
 
         pop = feat.GetField(pop_field)
+        geom = feat.GetGeometryRef()
+        if geom is None:
+            continue
         
+        bb = get_bbox(geom)
+
+        x1 = min(x1, bb[0])
+        y1 = min(y1, bb[1])
+        x2 = max(x2, bb[2])
+        y2 = max(y2, bb[3])
+
         if j%1000==0:
             #conn.commit()
             print "%s/%s (%0.2f%%)"%(j+1,n_features,100*((j+1)/float(n_features)))
             print "population ", pop
-
-        geom = feat.GetGeometryRef()
-        if geom is None:
-            continue
+            print bb
+    
+    print "bounding box ", x1, y1, x2, y2
 
 if __name__=='__main__':
     if len(sys.argv) < 3:
