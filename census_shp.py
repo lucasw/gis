@@ -156,7 +156,7 @@ def process(input_filename, output_filename):
     print "pop ", pop_tot, ", bounds ", pop_min, pop_max
     print "density ", density_min, density_max, ", area", area 
     dy = y2 - y1
-    dx = x2 - x1
+    dx = (x2 - x1) * math.cos(y1 * math.pi/180.0)
     pygame.init()
     ratio = dy / dx
     print "ratio ", ratio
@@ -216,8 +216,9 @@ def process(input_filename, output_filename):
                     color_val, \
                     0, 255* 0.7 + color_val * 0.3)
 
-            col = max(col, (0, 0, 0, 10))
-
+            #col = max(col, (0, 0, 0, 10))
+            if (col[3] < 10):
+                col = (col[0], col[1], col[2], 10)
         # draw bounding rect
         if False:
             bb_deg = block[0]
