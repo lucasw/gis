@@ -6,9 +6,33 @@ import sys
 import ogr
 import pygame
 import time
+import math
 
 def make_ogr_point(x,y):
     return ogr.Geometry(wkt="POINT(%f %f)"%(x,y))
+
+# http://stackoverflow.com/questions/21335091/python-area-of-irregular-polygon-results-in-negative-value
+# assume last point and first are same, apparently common in survey/gis data
+def get_area(pts):
+    area = 0.0
+
+    n = len(pts)
+    # if matching endpoint isn't true, maybe should make -1 optional
+    for i in range(n - 1):
+        i1 = (i+1)%n
+        area += pts[i][0]*pts[i1][1] - pts[i1][0]*pts[i][1]       
+        area *= 0.5
+
+    return abs(area);
+
+# http://www.arachnoid.com/area_irregular_polygon/index.html
+def find_area(array):
+    a = 0
+    ox,oy = array[0]
+    for x,y in array[1:]:
+        a += (x*oy-y*ox)
+        ox,oy = x,y
+    return a/2
 
 def get_pts(geom):
     x1=float("inf")
@@ -61,6 +85,11 @@ def process(input_filename, output_filename):
     x2 = float("-inf")
     y2 = float("-inf")
     
+    density_min = float("inf")
+    density_max = float("-inf")
+    #density_avg = 
+    area_tot = 0
+
     pop_min = float("inf")
     pop_max = float("-inf")
     pop_tot = 0
@@ -86,8 +115,31 @@ def process(input_filename, output_filename):
         x2 = max(x2, bb[2])
         y2 = max(y2, bb[3])
 
-        census.append((bb, pts, pop))
+        # all the pts end with with the same starting point, need to remember this
+        # when computing area
+        if (j == 0):
+            print "points ", pts
+    
+        # TBD need a lat/long to meters conversion
+        area = find_area(pts)
+        
+        if (area <= 0):
+            print j, " bad area ", pts
+            continue
+        
+        area_tot += area
 
+        census.append((bb, pts, pop, area))
+        
+        density = pop/area
+        
+        if (area < 2e-8):
+            print "small area", j, pop, area, pts
+        
+        if (pop > 0):
+            density_min = min(density_min, density)
+        density_max = max(density_max, density)
+        
         pop_min = min(pop_min, pop)
         pop_max = max(pop_max, pop)
         pop_tot += pop
@@ -101,7 +153,7 @@ def process(input_filename, output_filename):
     print j
     print "bounding box ", x1, y1, x2, y2
     print "pop ", pop_tot, ", bounds ", pop_min, pop_max
-   
+    print "density ", density_min, density_max, ", area", area 
     dy = y2 - y1
     dx = x2 - x1
     pygame.init()
@@ -121,9 +173,15 @@ def process(input_filename, output_filename):
     print census[0][0]
     for block in census:
         pop = block[2]
+        area = block[3]
+        density = pop/area
         # TODO need to take into account area for proper coloring
-        color_val = 255.0 * pop / pop_max
-        col = (color_val * 0.5 + 60, color_val, color_val*0.8, 120)
+        color_val = 0
+        log_scale = 0.0001
+        if (density > 0):
+            color_val = (255.0) * math.log(density * log_scale) / \
+                 math.log(density_max * log_scale)
+        col = (255 - color_val * 0.5 , color_val, 128 - color_val * 0.5, 120)
         if pop == 0:
             col = (0,0,0, 40)
         # draw bounding rect
@@ -142,11 +200,11 @@ def process(input_filename, output_filename):
         pts = []
         for (xd,yd) in deg_pts:
             xp = (xd - x1) * pix_per_deg 
-            yp = (yd - y1) * pix_per_deg
+            yp = height - (yd - y1) * pix_per_deg
             pts.append((xp, yp)) 
 
         pygame.draw.polygon(surf, col, pts, 0)
-        pygame.draw.polygon(surf, (0, 0, 0, 40), pts, 1)
+        #pygame.draw.polygon(surf, (0, 0, 0, 100), pts, 1)
     
     screen.blit(surf, (0,0))
     pygame.image.save(screen, sys.argv[2])
