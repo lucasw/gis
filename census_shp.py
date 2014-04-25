@@ -5,11 +5,12 @@
 import sys
 import ogr
 import pygame
+import time
 
 def make_ogr_point(x,y):
     return ogr.Geometry(wkt="POINT(%f %f)"%(x,y))
 
-def get_bbox(geom):
+def get_pts(geom):
     x1=float("inf")
     y1=float("inf")
     x2=float("-inf")
@@ -31,7 +32,7 @@ def get_bbox(geom):
         x2 = max(x2,x)
         y2 = max(y2,y)
         
-    return (x1, y1, x2, y2)
+    return (pts, (x1, y1, x2, y2))
 
 def process(input_filename, output_filename):
 
@@ -73,14 +74,19 @@ def process(input_filename, output_filename):
         if geom is None:
             continue
         
-        bb = get_bbox(geom)
+        dat = get_pts(geom)
+        if dat is None:
+            continue
+        pts, bb = dat
+        #if len(pts) != 4:
+        #    print j, " ", pop, " ", len(pts)
 
         x1 = min(x1, bb[0])
         y1 = min(y1, bb[1])
         x2 = max(x2, bb[2])
         y2 = max(y2, bb[3])
 
-        census.append((bb, geom, pop))
+        census.append((bb, pts, pop))
 
         pop_min = min(pop_min, pop)
         pop_max = max(pop_max, pop)
@@ -101,11 +107,12 @@ def process(input_filename, output_filename):
     pygame.init()
     ratio = dy / dx
     print "ratio ", ratio
-    width = 1024
+    width = 2048
     height = ratio * width
     size = (int(width), int(height))
     screen = pygame.display.set_mode(size)
-    screen.fill((0,0,50))
+    screen.fill((255,255,255, 255))
+    surf = pygame.Surface(size, flags=pygame.SRCALPHA)
     pix_per_deg = width / dx 
     print "pix per deg ", pix_per_deg
 
@@ -116,19 +123,34 @@ def process(input_filename, output_filename):
         pop = block[2]
         # TODO need to take into account area for proper coloring
         color_val = 255.0 * pop / pop_max
-        col = (color_val, color_val, color_val)
-        bb_deg = block[0]
-        x1b = bb_deg[0] - x1
-        y1b = bb_deg[1] - y1
-        x2b = bb_deg[2] - bb_deg[0]
-        y2b = bb_deg[3] - bb_deg[1]
-        rect = pygame.Rect( 
-            int(x1b * pix_per_deg), height - int( (y1b + y2b) * pix_per_deg), 
-            int(x2b * pix_per_deg), int(y2b * pix_per_deg) )
-        pygame.draw.rect(screen, col, rect, 0)
-    #    print census[2
+        col = (color_val * 0.5 + 60, color_val, color_val*0.8, 120)
+        if pop == 0:
+            col = (0,0,0, 40)
+        # draw bounding rect
+        if False:
+            bb_deg = block[0]
+            x1b = bb_deg[0] - x1 
+            y1b = bb_deg[1] - y1
+            x2b = bb_deg[2] - bb_deg[0]
+            y2b = bb_deg[3] - bb_deg[1]
+            rect = pygame.Rect( 
+                int(x1b * pix_per_deg), height - int( (y1b + y2b) * pix_per_deg), 
+                int(x2b * pix_per_deg), int(y2b * pix_per_deg) )
+            pygame.draw.rect(surf, col, rect, 0)
 
-    pygame.image.save(screen, "pop_density.png")
+        deg_pts = block[1]
+        pts = []
+        for (xd,yd) in deg_pts:
+            xp = (xd - x1) * pix_per_deg 
+            yp = (yd - y1) * pix_per_deg
+            pts.append((xp, yp)) 
+
+        pygame.draw.polygon(surf, col, pts, 0)
+        pygame.draw.polygon(surf, (0, 0, 0, 40), pts, 1)
+    
+    screen.blit(surf, (0,0))
+    pygame.image.save(screen, sys.argv[2])
+    time.sleep(1.0)
 
 if __name__=='__main__':
     if len(sys.argv) < 3:
