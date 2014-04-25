@@ -8,6 +8,8 @@ import pygame
 import time
 import math
 
+# should really be doing this in ipython notebook
+
 def make_ogr_point(x,y):
     return ogr.Geometry(wkt="POINT(%f %f)"%(x,y))
 
@@ -131,14 +133,13 @@ def process(input_filename, output_filename):
 
         census.append((bb, pts, pop, area))
         
-        density = pop/area
-        
-        if (area < 2e-8):
+        if (area < 2e-10):
             print "small area", j, pop, area, pts
         
         if (pop > 0):
+            density = pop/area
             density_min = min(density_min, density)
-        density_max = max(density_max, density)
+            density_max = max(density_max, density)
         
         pop_min = min(pop_min, pop)
         pop_max = max(pop_max, pop)
@@ -159,7 +160,7 @@ def process(input_filename, output_filename):
     pygame.init()
     ratio = dy / dx
     print "ratio ", ratio
-    width = 2048
+    width = 4096
     height = ratio * width
     size = (int(width), int(height))
     screen = pygame.display.set_mode(size)
@@ -167,6 +168,12 @@ def process(input_filename, output_filename):
     surf = pygame.Surface(size, flags=pygame.SRCALPHA)
     pix_per_deg = width / dx 
     print "pix per deg ", pix_per_deg
+
+    log_scale = 0.0001
+    log_density_max = math.log(density_max * log_scale)
+   
+    # hack because some densities are coming out much too high
+    #density_max = density_min + (density_max - density_min) * 0.1
 
     print len(census)
     print census[0]
@@ -177,13 +184,40 @@ def process(input_filename, output_filename):
         density = pop/area
         # TODO need to take into account area for proper coloring
         color_val = 0
-        log_scale = 0.0001
-        if (density > 0):
-            color_val = (255.0) * math.log(density * log_scale) / \
-                 math.log(density_max * log_scale)
-        col = (255 - color_val * 0.5 , color_val, 128 - color_val * 0.5, 120)
-        if pop == 0:
-            col = (0,0,0, 40)
+        col = (0,0,0, 30)
+        if pop > 0:
+            #color_val = 255.0 * (density - density_min) / (density_max - density_min)
+            color_val = 255.0 * math.log(density * log_scale) / (log_density_max)
+            if (color_val > 255):
+                color_val = 255
+            if False: #(density > 0):
+                # this is producing negative numbers when it shouldn't be  TBD
+                log_density = math.log(density * log_scale)
+                color_val = (255.0) * log_density / log_density_max
+                if color_val < 0:
+                    print "negative color val ", density, density_max, log_scale, color_val, \
+                    log_density, log_density_max
+            
+            #col = ( 0.7 * 255 + 0.2 * (255 - color_val), \
+            #    color_val, 169 - color_val * 0.5, 10 + color_val * 0.9)
+            
+            if (color_val < 85):
+                col = ( 85 - color_val, \
+                    200 - color_val, \
+                    200 - color_val, \
+                    10 + color_val * 0.6)
+            elif (color_val < 180):
+                col = ( 255 - color_val*0.5, \
+                    85 + color_val* 0.2,\
+                    0, \
+                    150 + color_val * 0.3)
+            else:
+                col = ( 86 - color_val/3, \
+                    color_val, \
+                    0, 255* 0.7 + color_val * 0.3)
+
+            col = max(col, (0, 0, 0, 10))
+
         # draw bounding rect
         if False:
             bb_deg = block[0]
@@ -199,16 +233,19 @@ def process(input_filename, output_filename):
         deg_pts = block[1]
         pts = []
         for (xd,yd) in deg_pts:
-            xp = (xd - x1) * pix_per_deg 
+            xp = (xd - x1) * pix_per_deg * math.cos(y1 * math.pi / 180.0) 
             yp = height - (yd - y1) * pix_per_deg
             pts.append((xp, yp)) 
-
-        pygame.draw.polygon(surf, col, pts, 0)
+        
+        try:
+            pygame.draw.polygon(surf, col, pts, 0)
+        except TypeError as e:
+            print "bad col? ", col
         #pygame.draw.polygon(surf, (0, 0, 0, 100), pts, 1)
     
     screen.blit(surf, (0,0))
     pygame.image.save(screen, sys.argv[2])
-    time.sleep(1.0)
+    time.sleep(0.0)
 
 if __name__=='__main__':
     if len(sys.argv) < 3:
