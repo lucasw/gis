@@ -1,5 +1,6 @@
 # basic code from https://gist.github.com/anonymous/4385412#file-makedots-py
 
+# Lucas Walter April 2014 
 
 import sys
 import ogr
@@ -94,12 +95,40 @@ def process(input_filename, output_filename):
     print j
     print "bounding box ", x1, y1, x2, y2
     print "pop ", pop_tot, ", bounds ", pop_min, pop_max
-    
+   
+    dy = y2 - y1
+    dx = x2 - x1
+    pygame.init()
+    ratio = dy / dx
+    print "ratio ", ratio
+    width = 1024
+    height = ratio * width
+    size = (int(width), int(height))
+    screen = pygame.display.set_mode(size)
+    screen.fill((0,0,50))
+    pix_per_deg = width / dx 
+    print "pix per deg ", pix_per_deg
+
     print len(census)
     print census[0]
     print census[0][0]
-    #for block in census:
-    #    print census[2]
+    for block in census:
+        pop = block[2]
+        # TODO need to take into account area for proper coloring
+        color_val = 255.0 * pop / pop_max
+        col = (color_val, color_val, color_val)
+        bb_deg = block[0]
+        x1b = bb_deg[0] - x1
+        y1b = bb_deg[1] - y1
+        x2b = bb_deg[2] - bb_deg[0]
+        y2b = bb_deg[3] - bb_deg[1]
+        rect = pygame.Rect( 
+            int(x1b * pix_per_deg), height - int( (y1b + y2b) * pix_per_deg), 
+            int(x2b * pix_per_deg), int(y2b * pix_per_deg) )
+        pygame.draw.rect(screen, col, rect, 0)
+    #    print census[2
+
+    pygame.image.save(screen, "pop_density.png")
 
 if __name__=='__main__':
     if len(sys.argv) < 3:
