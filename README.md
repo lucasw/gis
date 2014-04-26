@@ -3,8 +3,8 @@ gis
 
 GIS stuff, play with openstreetmap, U.S. census, data.seattle.gov data.
 
-census
-======
+Source Census Data
+==================
 
 http://bmander.com/dotmap/methods.html
 
@@ -26,4 +26,7 @@ https://gist.github.com/anonymous/4385412
 ~~python-shapely~~
 
 
+Usage
+=====
 
+python census_shp.py ~/own/gis/census/*53_pophu.shp pop_density_wa.png
