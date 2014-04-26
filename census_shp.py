@@ -81,6 +81,23 @@ def process(input_filename, output_filename):
             pop_field = i
 
     n_features = len(lyr)
+  
+    # TODO get shp files of King County, Seattle, other interesting boundaries:
+    # zip codes, legislative districts, precincts, Seattle districts...
+    # and test if points are in interior or not, provide boundary file from
+    # command line
+
+    # rough extent of king county
+    if False:
+      xlim1 = -122.441
+      xlim2 = -121.743
+      ylim1 = 47.254461
+      ylim2 = 47.778
+    # Seattle
+    xlim1 = -122.5
+    xlim2 = -122.2
+    ylim1 = 47.47
+    ylim2 = 47.74
 
     x1 = float("inf")
     y1 = float("inf")
@@ -112,11 +129,15 @@ def process(input_filename, output_filename):
         #if len(pts) != 4:
         #    print j, " ", pop, " ", len(pts)
 
+        #exclude region outside of limits
+        if (bb[0] > xlim2) or (bb[0] < xlim1) or (bb[1] > ylim2) or (bb[1] < ylim1):
+            continue
+
         x1 = min(x1, bb[0])
         y1 = min(y1, bb[1])
         x2 = max(x2, bb[2])
         y2 = max(y2, bb[3])
-
+      
         # all the pts end with with the same starting point, need to remember this
         # when computing area
         if (j == 0):
@@ -131,15 +152,16 @@ def process(input_filename, output_filename):
         
         area_tot += area
 
-        census.append((bb, pts, pop, area))
-        
         if (area < 2e-10):
             print "small area", j, pop, area, pts
-        
+       
+        density = 0
         if (pop > 0):
             density = pop/area
             density_min = min(density_min, density)
             density_max = max(density_max, density)
+        
+        census.append((bb, pts, pop, area, density))
         
         pop_min = min(pop_min, pop)
         pop_max = max(pop_max, pop)
@@ -154,7 +176,7 @@ def process(input_filename, output_filename):
     print j
     print "bounding box ", x1, y1, x2, y2
     print "pop ", pop_tot, ", bounds ", pop_min, pop_max
-    print "density ", density_min, density_max, ", area", area 
+    print "density ", density_min, density_max, ", area total ", area_tot 
     dy = y2 - y1
     dx = (x2 - x1) * math.cos(y1 * math.pi/180.0)
     pygame.init()
@@ -169,25 +191,44 @@ def process(input_filename, output_filename):
     pix_per_deg = width / dx 
     print "pix per deg ", pix_per_deg
 
+    census_sorted = sorted(census, key=lambda block: block[4]) 
+
     log_scale = 0.0001
     log_density_max = math.log(density_max * log_scale)
    
     # hack because some densities are coming out much too high
     #density_max = density_min + (density_max - density_min) * 0.1
+    
+    # when this reach pop_tot/2, shift coloring
+    pop_accum = 0
+    # TODO later make number of subdivision dynamic
+    pop_area = [0, 0]
 
-    print len(census)
-    print census[0]
-    print census[0][0]
-    for block in census:
+    print len(census_sorted)
+    print census_sorted[0]
+    print census_sorted[0][0]
+    for block in census_sorted:
         pop = block[2]
+        pop_accum += pop
         area = block[3]
-        density = pop/area
+        density = block[4]
         # TODO need to take into account area for proper coloring
         color_val = 0
-        col = (0,0,0, 30)
+        col = (0,0,0, 60)
+
         if pop > 0:
+          fr = math.log(density * log_scale) / (log_density_max)
+          # change colorization based on which half of the population density
+          # divide the block is in
+          if pop_accum > pop_tot / 2:
+            col = (0, fr * 200, 100 + fr * 155, 200 + fr * 55)
+            pop_area[0] += area
+          else:
+            col = (255, 50 + fr * 100, 0, 50 + fr * 100)
+            pop_area[1] += area
+
+        if False: #pop > 0:
             #color_val = 255.0 * (density - density_min) / (density_max - density_min)
-            color_val = 255.0 * math.log(density * log_scale) / (log_density_max)
             if (color_val > 255):
                 color_val = 255
             if False: #(density > 0):
@@ -219,6 +260,7 @@ def process(input_filename, output_filename):
             #col = max(col, (0, 0, 0, 10))
             if (col[3] < 10):
                 col = (col[0], col[1], col[2], 10)
+
         # draw bounding rect
         if False:
             bb_deg = block[0]
@@ -243,7 +285,9 @@ def process(input_filename, output_filename):
         except TypeError as e:
             print "bad col? ", col
         #pygame.draw.polygon(surf, (0, 0, 0, 100), pts, 1)
-    
+   
+    print "area ", [x / area_tot for x in pop_area]
+
     screen.blit(surf, (0,0))
     pygame.image.save(screen, sys.argv[2])
     time.sleep(0.0)
