@@ -19,6 +19,7 @@ def get_pts(geom):
     if not pts:
         return None
 
+    # might be x,y,z, how to query?
     for x,y in pts:
         x1 = min(x1,x)
         y1 = min(y1,y)
