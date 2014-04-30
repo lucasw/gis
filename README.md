@@ -96,4 +96,19 @@ ipython notebook --pylab inline
 Edit parameter values, run all, should get png in current directory.  
 
 old python only script:
-python census_shp.py ~/own/gis/census/*53_pophu.shp pop_density_wa.png output.png
+    python census_shp.py ~/own/gis/census/*53_pophu.shp pop_density_wa.png output.png
+
+
+Street Network
+==============
+
+How to implement a graph in python?
+
+Each street item as an F_INTR_ID and a S_INTR_ID - the start and finish intersections
+
+Combining network with pavement
+-------------------------------
+
+Need to create a graph of adjacent pavement sections, associate network segments inbetween them.
+
+Want to get average width of each network segment, and approximate radius of each intersection.
