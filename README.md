@@ -86,6 +86,8 @@ https://data.seattle.gov/Transportation/Traffic-Signals/dr6d-ejex
 Traffic Circles
 ---------------
 
+https://data.seattle.gov/Transportation/Traffic-Circles/g6i5-ix4z
+
 Usage
 =====
 
