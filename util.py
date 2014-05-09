@@ -3,6 +3,33 @@
 def make_ogr_point(x,y):
     return ogr.Geometry(wkt="POINT(%f %f)"%(x,y))
 
+def get_pts2(geom):
+    x1=float("inf")
+    y1=float("inf")
+    x2=float("-inf")
+    y2=float("-inf")
+
+    #ch = geom.ConvexHull()
+    #if not ch:
+    #    return None
+    #bd = ch.GetBoundary()
+    #if not bd:
+    #    return None
+    pts = geom.GetPoints()
+    if not pts:
+        return None
+
+    #print len(pts)
+    #print pts
+    # z is probably supposed to be elevation, but is -1.7976931348623157e+308
+    for x,y,z in pts:
+        x1 = min(x1,x)
+        y1 = min(y1,y)
+        x2 = max(x2,x)
+        y2 = max(y2,y)
+
+    return (pts, (x1, y1, x2, y2))
+
 def get_pts(geom):
     x1=float("inf")
     y1=float("inf")
