@@ -1,4 +1,5 @@
 # some basic code from https://gist.github.com/anonymous/4385412#file-makedots-py
+import ogr
 
 def make_ogr_point(x,y):
     return ogr.Geometry(wkt="POINT(%f %f)"%(x,y))
@@ -9,12 +10,6 @@ def get_pts2(geom):
     x2=float("-inf")
     y2=float("-inf")
 
-    #ch = geom.ConvexHull()
-    #if not ch:
-    #    return None
-    #bd = ch.GetBoundary()
-    #if not bd:
-    #    return None
     pts = geom.GetPoints()
     if not pts:
         return None
