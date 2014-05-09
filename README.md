@@ -114,3 +114,18 @@ Combining network with pavement
 Need to create a graph of adjacent pavement sections, associate network segments inbetween them.
 
 Want to get average width of each network segment, and approximate radius of each intersection.
+
+King County
+===========
+
+data.kingcounty.gov
+
+http://www5.kingcounty.gov/gisdataportal/Default.aspx
+
+
+King County Voting Districts/Precincts
+======================================
+
+https://data.kingcounty.gov/Places-Boundaries/Voting-Districts-of-King-County/4eex-7357
+
+These have shape_areas, presumably these are square meters?
