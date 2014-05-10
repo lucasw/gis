@@ -129,3 +129,21 @@ King County Voting Districts/Precincts
 https://data.kingcounty.gov/Places-Boundaries/Voting-Districts-of-King-County/4eex-7357
 
 These have shape_areas, presumably these are square meters?
+
+Problems with ipython crashing when trying to get points- Ipython dies with no error, but trying to duplicate in regular python leads to::
+
+  >>> geom= feat.GetGeometryRef()
+  >>> geom
+  <osgeo.ogr.Geometry; proxy of <Swig Object of type 'OGRGeometryShadow *' at 0x7fc5103c2e10> >
+  >>> pts = geom.GetPoints()
+  ERROR 6: Incompatible geometry for operation
+
+So far I've discovered some geoms like in the street network can directly provide points with GetPoints(), while others in the census and voting district shape files require::
+ 
+  >>> ch = geom.ConvexHull()
+  >>> bd = ch.GetBoundary()
+  >>> pts = bd.GetPoints()
+  >>> pts
+  [(1347198.0200866014, 257822.7410414368), (1347169.633004278, 257894.8399786055), (1347151.2829753608, 257941.446840778),...
+
+Unfortunately this is just the points of the convex hull, which worked okay for rectangular census blocks but not complex voting districts.  So skip the convex hull part, and do bd = geom.GetBoundary- this works.
