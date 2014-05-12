@@ -25,6 +25,7 @@ def get_pts2(geom):
 
     return (pts, (x1, y1, x2, y2))
 
+# this gets the convex hull points
 def get_pts(geom):
     x1=float("inf")
     y1=float("inf")
@@ -60,6 +61,19 @@ def find_area(array):
     return a/2
 
 #################################
+
+# TBD replace this with a proper projection approach
+# TBD don't use this, use ax = fig.add_subplot(111, aspect=fr)
+def conv_ll(latlong, fr):
+    longitude = latlong[0]
+    latitude = latlong[1]
+    if (fr == None):
+        fr = math.cos(latitude * math.pi / 180.0)
+        print "latitude scale fraction", fr
+    x = longitude * fr
+    y = latitude
+    
+    return (x, y, fr)
 
 # for loading street network data
 def update_intersection(graph, intr_id, snd_id, latlongz):
@@ -128,6 +142,17 @@ def load_streets(input_filename, limits):
         if geom is None:
             print  j, " no geom"
             continue
+ 
+        pts = geom.GetPoints()
+        # TBD make sure these are in right order,
+        # that the first point corresponds to inter_1
+        latlong1 = pts[0]
+        latlong2 = pts[-1]
+        
+        #exclude region outside of limits
+        if (latlong1[0] > xlim2) or (latlong1[0] < xlim1) or \
+            (latlong1[1] > ylim2) or (latlong1[1] < ylim1):
+            continue
             
         inter_1 = feat.GetField(f_inter_ind)
         inter_2 = feat.GetField(t_inter_ind)
@@ -147,17 +172,6 @@ def load_streets(input_filename, limits):
             #else:
                #print "dupe compkey", snd_id, compkey, inter_1, inter_2
                
-        pts = geom.GetPoints()
-        # TBD make sure these are in right order,
-        # that the first point corresponds to inter_1
-        latlong1 = pts[0]
-        latlong2 = pts[-1]
-        
-                #exclude region outside of limits
-        if (latlong1[0] > xlim2) or (latlong1[0] < xlim1) or \
-            (latlong1[1] > ylim2) or (latlong1[1] < ylim1):
-            continue
-        
         update_intersection(graph, inter_1, snd_id, latlong1)
         update_intersection(graph, inter_2, snd_id, latlong2)
         
