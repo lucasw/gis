@@ -147,3 +147,8 @@ So far I've discovered some geoms like in the street network can directly provid
   [(1347198.0200866014, 257822.7410414368), (1347169.633004278, 257894.8399786055), (1347151.2829753608, 257941.446840778),...
 
 Unfortunately this is just the points of the convex hull, which worked okay for rectangular census blocks but not complex voting districts.  So skip the convex hull part, and do bd = geom.GetBoundary- this works.
+
+Precinct Graph
+--------------
+
+Find shared edges between precincts and make a graph connecting them all.  Find permutations of precincts that would result in >50% approval, but don't break the graph.  Designate one downtown precinct to be the center and make sure remaining precincts connect to it.
