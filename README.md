@@ -66,6 +66,8 @@ Pavement
 
 Pretty old (1999), but better than nothing.  Want to be able to figure out street widths.
 
+https://data.seattle.gov/dataset/Pavement-Edge/zbph-53dz
+
 Parking
 -------
 
@@ -147,6 +149,8 @@ So far I've discovered some geoms like in the street network can directly provid
   [(1347198.0200866014, 257822.7410414368), (1347169.633004278, 257894.8399786055), (1347151.2829753608, 257941.446840778),...
 
 Unfortunately this is just the points of the convex hull, which worked okay for rectangular census blocks but not complex voting districts.  So skip the convex hull part, and do bd = geom.GetBoundary- this works.
+
+What are units of precinct boundaries?  They aren't lat/long- it's feet with reference to 'harn 1983' etc.
 
 Precinct Graph
 --------------
