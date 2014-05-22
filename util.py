@@ -17,13 +17,13 @@ def get_pts2(geom):
     #print len(pts)
     #print pts
     # z is probably supposed to be elevation, but is -1.7976931348623157e+308
-    for x,y,z in pts:
+    if False: # for x,y,z in pts:
         x1 = min(x1,x)
         y1 = min(y1,y)
         x2 = max(x2,x)
         y2 = max(y2,y)
 
-    return (pts, (x1, y1, x2, y2))
+    return pts #, (x1, y1, x2, y2))
 
 # this gets the convex hull points
 def get_pts(geom):
@@ -42,14 +42,7 @@ def get_pts(geom):
     if not pts:
         return None
 
-    # might be x,y,z, how to query?
-    for x,y in pts:
-        x1 = min(x1,x)
-        y1 = min(y1,y)
-        x2 = max(x2,x)
-        y2 = max(y2,y)
-        
-    return (pts, (x1, y1, x2, y2))
+    return (pts)
 
 # http://www.arachnoid.com/area_irregular_polygon/index.html
 def find_area(array):
