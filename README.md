@@ -36,11 +36,18 @@ City Council Districts
 These list census tracts:
 http://clerk.seattle.gov/~public/charter/charter.htm#articleIV
 
+http://www.seattledistrictsnow.org/files/view-only_petition.pdf
+
 The census shape file has TRACTCE10, which is the same as the tract numbers in the charter with two decimal places- 97.02 is 009702. 
 
 The charter also mentions block groups, which appear the same as BLOCKCE.  Perhaps some of the tracts span the border with neighboring cities, so the blocks are called out.  
 
 It should be easy to make list of all the tracts and block numbers where provided in an ipython notebook, then plot them and have a data structure that organizes all the census data by council district.
+
+Missing tracts
+--------------
+
+So far it looks like the amendment missed tracts in District 2: 110.02 and 111.01
 
 Buildings
 ---------
