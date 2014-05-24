@@ -49,9 +49,13 @@ It should be easy to make list of all the tracts and block numbers where provide
 Get a shapefile of the Seattle boundary and make sure the edges of the districts are within it.
 https://data.seattle.gov/dataset/Seattle-City-Limits/veex-tfda
 
-#### Missing tracts
+#### Missing & Erroneous tracts
 
 So far it looks like the amendment missed tracts in District 2: 110.02 and 111.01
+
+Also 260.01 block 1008 is outside the Seattle boundary.
+
+Block Group 1 of Tract 17 should be 17.01
 
 ### Export to shapefile, kml?
 
