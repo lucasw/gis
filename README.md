@@ -44,6 +44,8 @@ The charter also mentions block groups, which appear the same as BLOCKCE.  Perha
 
 It should be easy to make list of all the tracts and block numbers where provided in an ipython notebook, then plot them and have a data structure that organizes all the census data by council district.
 
+How to do joins that will meld all the tracts together- buffer + cascaded_union in Shapely?
+
 ### Verification 
 
 Get a shapefile of the Seattle boundary and make sure the edges of the districts are within it.
