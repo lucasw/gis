@@ -44,10 +44,22 @@ The charter also mentions block groups, which appear the same as BLOCKCE.  Perha
 
 It should be easy to make list of all the tracts and block numbers where provided in an ipython notebook, then plot them and have a data structure that organizes all the census data by council district.
 
-Missing tracts
---------------
+### Verification 
+
+Get a shapefile of the Seattle boundary and make sure the edges of the districts are within it.
+https://data.seattle.gov/dataset/Seattle-City-Limits/veex-tfda
+
+#### Missing tracts
 
 So far it looks like the amendment missed tracts in District 2: 110.02 and 111.01
+
+### Export to shapefile, kml?
+
+Use fiona, though no ubuntu package:
+https://pypi.python.org/pypi/Fiona
+
+So install python-pip and then pip-install fiona
+also need descartes
 
 Buildings
 ---------
