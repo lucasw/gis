@@ -30,6 +30,12 @@ https://gist.github.com/anonymous/4385412
     
 ~~python-shapely~~
 
+Housing Data
+------------
+
+Per-tract info on housing units in multi-unit structures vs. single-family-housing?
+
+http://quickfacts.census.gov/qfd/meta/long_HSG096212.htm
 
 
 Seattle Data
