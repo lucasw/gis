@@ -30,6 +30,12 @@ https://gist.github.com/anonymous/4385412
     
 ~~python-shapely~~
 
+
+2013 or 2014 Census updates?
+----------------------------
+
+https://www.census.gov/geo/maps-data/data/tiger-line.html
+
 Housing Data
 ------------
 
