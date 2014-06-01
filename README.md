@@ -112,6 +112,8 @@ https://data.seattle.gov/Land-Base/DPD-ZONING/r6xd-5qab
 Use this for zoning instead:
 https://data.seattle.gov/dataset/City-Of-Seattle-Zoning/2hat-teay
 
+Look at zoning breakdown of each district, total area of each zoning type in all of Seattle.
+
 Street Network
 --------------
 
