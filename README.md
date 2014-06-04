@@ -131,6 +131,8 @@ Parking
 
 Haven't found this dataset yet- street parking, zone permit areas.
 
+https://data.seattle.gov/Transportation/No-parking-data/aua5-7y43
+
 Traffic Volume
 --------------
 
@@ -182,6 +184,11 @@ data.kingcounty.gov
 
 http://www5.kingcounty.gov/gisdataportal/Default.aspx
 
+Parcels
+-------
+
+TBD find link for this:
+property_SHP.zip
 
 King County Voting Districts/Precincts
 ======================================
