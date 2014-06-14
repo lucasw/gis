@@ -43,6 +43,39 @@ Per-tract info on housing units in multi-unit structures vs. single-family-housi
 
 http://quickfacts.census.gov/qfd/meta/long_HSG096212.htm
 
+Economic
+--------
+
+American Community Survey?
+
+http://www2.census.gov/acs2012_5yr/summaryfile/2008-2012_ACSSF_By_State_All_Tables/
+
+http://www2.census.gov/acs2012_5yr/summaryfile/2008-2012_ACSSF_By_State_All_Tables/Washington_All_Geographies_Tracts_Block_Groups_Only.zip
+
+False leads:
+
+1yr vs. 3 vs 5yr?
+http://www2.census.gov/acs2012_1yr/pums/
+
+files http://www2.census.gov/acs2012_1yr/pums/csv_hwa.zip and http://www2.census.gov/acs2012_1yr/pums/unix_pwa.zip are for Washington State.
+
+Data is in sas7bdat format, what is that?
+
+https://pypi.python.org/pypi/sas7bdat
+
+Don't bother with install, just export PYTHONPATH=$PYTHONPATH:. and then run the convert to csv script from the same dir:
+
+:~/other/sas7bdat-0.2.2$ ./scripts/sas7bdat_to_csv ~/own/gis/acs/psam_h53.sas7bdat 
+[psam_h53.csv] wrote 32149 of 32149 lines
+
+The data has a few samples of income per PUMA Public Use Microdata Area "PUMAs are special non-overlapping areas that partition each state into contiguous geographic units containing no fewer than 100,000 people each"
+
+Need to get PUMA shapefiles.  
+
+But what about tract level data?
+
+BG is for block group:
+ftp://ftp2.census.gov/geo/tiger/TIGER_DP/2011ACS/2011_ACS_5YR_BG_53.gdb.zip
 
 Seattle Data
 ============
