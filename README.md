@@ -241,8 +241,47 @@ http://www5.kingcounty.gov/gisdataportal/Default.aspx
 Parcels
 -------
 
-TBD find link for this:
 property_SHP.zip
+
+ftp://ftp.kingcounty.gov/gis/Web/GISData/property_SHP.zip
+
+Found via http://www5.kingcounty.gov/gisdataportal/Default.aspx
+
+The best information is in this shapfile:
+
+parcel_address.shp
+
+The amount of data is very large, filter on POSTALCYTN = SEATTLE or CTYNAME = Seattle - no these don't include everything, try LEVY_JURIS=SEATTLE (more complete but still not all) or KCTP_CTYST=SEATTLE WA (also not complete).  What about zip codes?  Also not complete.  
+
+A boolean combination may be best, in qgis Select By Expression: ( "POSTALCTYN" = 'SEATTLE')  +  ("CTYNAME" = 'Seattle' ) +  "LEVY_JURIS"= 'SEATTLE' + "KCTP_CTYST"='SEATTLE'( "POSTALCTYN" = 'SEATTLE')  +  ("CTYNAME" = 'Seattle' ) +  "LEVY_JURIS"= 'SEATTLE' + "KCTP_CTYST"='SEATTLE' + ("JURIS" = 'SE') (this still isn't working in qgis)
+
+Maybe just boundary clipping.
+
+The 'PRESENTUSE' field looks very interesting.
+
+Ought to make a geojson that has all that information plus census information and population density.  Some info in the parcels could be used to determine that chunks of census blocks are unoccupied (because the taxes are zero?  Is that a safe assumption), and that the real density is higher.  
+
+Need to calculate area of all parcels within a census block (and are there any parcels that cross census block boundaries?), and then assume population is distributed among them.  
+The densities will be higher since streets are excluded, which is fine.
+It's okay for densities to include more unused areas at higher levels, because those areas ought to be factored in.
+
+Even without integrating census data a simple colorized map of property size or property values would be useful.
+
+Need to convert the units to lat long.
+
+" Planar coordinates are encoded using coordinate pair
+Abscissae (x-coordinates) are specified to the nearest 0.0005
+Ordinates (y-coordinates) are specified to the nearest 0.0005
+Planar coordinates are specified in Foot_US
+
+The horizontal datum used is D North American 1983 HARN.
+The ellipsoid used is GRS 1980.
+The semi-major axis of the ellipsoid used is 6378137.0.
+The flattening of the ellipsoid used is 1/298.257222101."
+
+
+Prop 1 vs. parcel size would be interesting.
+
 
 King County Voting Districts/Precincts
 ======================================
