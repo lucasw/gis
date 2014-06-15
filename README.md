@@ -279,6 +279,13 @@ The ellipsoid used is GRS 1980.
 The semi-major axis of the ellipsoid used is 6378137.0.
 The flattening of the ellipsoid used is 1/298.257222101."
 
+Convert to EPSG:4326 - WGS 84 (Seattle zoning map), or EPSG:4269 - NAD83 (Census) ?
+From USER:100000 -  * Generated CRS (+proj=lcc +lat_1=47.5 +lat_2=48.73333333333333 +lat_0=47 +lon_0=-120.8333333333333 +x_0=500000.0000000001 +y_0=0 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=us-ft +no_defs)
+
+What happens during conversion to geojson with no parameters, does it do the right thing with coordinates?  No it doesn't, also it is huge.
+
+  ogr2ogr -f "GeoJSON" kc_parcels.json ../parcel_address.shp parcel_address
+
 
 Prop 1 vs. parcel size would be interesting.
 
