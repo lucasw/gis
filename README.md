@@ -334,6 +334,12 @@ ERROR 1: TopologyException: Input geom 0 is invalid: Self-intersection at or nea
 ^[[B^[[BERROR 1: TopologyException: Input geom 0 is invalid: Self-intersection at or near point 1295687.0337478775 196514.39328233138 at 1295687.0337478775 196514.39328233138
 ERROR 1: TopologyException: Input geom 0 is invalid: Self-intersection at or near point 1295277.0759567122 202488.5485786706 at 1295277.0759567122 202488.5485786706
 
+Simplify:
+
+ogr2ogr -simplify 0.0001 simplified_seattle_parcel.shp ../seattle_parcel.shp seattle_parcel
+
+That halved the shapefile size (the dbf is still the same and huge, only the other filtering of fields will get that down), try make the tolerance 10x bigger - no change?  Raise to 0.001 makes some polys reall bad (mostly coastlines), but most polys are already simple so don't benefit, and size doesn't shrink much.
+
 
 
 Could go back to making a static ipython image.
