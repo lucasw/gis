@@ -298,6 +298,46 @@ Try reprojection.
 
 See lat and longs in output file so looking good.  Confirmed in google maps version.  Next go forwared with with clipping down 
 
+Seattle rough bounding lat/long
+  47.735444 -122.4394
+  47.478379 -122.217455
+
+  ogr2ogr -f "GeoJSON" -t_srs EPSG:4326 -clipdst -122.4394 47.478379 -122.217455 47.735444 park_property.json ../park_property.shp park_property
+
+Now try it on big kc_property shapefile:
+  
+  ogr2ogr -f "GeoJSON" -t_srs EPSG:4326 -clipdst -122.4394 47.478379 -122.217455 47.735444 seattle_parcels.json ../parcel_address.shp parcel_address
+
+Still nearly 500 MB, loads very slow in qgis.  Would take a ton of work to make this interactive in google maps with level-of-detail paging algorithms.
+
+Why is it so large compared to census data, the entire state there was only 200 MB.  Are there too many data fields?  Could screen out all features except for Shape_area or a few other.  Are the polygons too detailed?
+
+  ogr2ogr -f "GeoJSON" -select Shape_area,TAX_IMPR,TAX_LNDVAL -t_srs EPSG:4326 -clipdst -122.4394 47.478379 -122.217455 47.735444 seattle_parcels2.json ../parcel_address.shp parcel_address
+
+The above field selection only shrinks the 500 MB down to 200 MB, the problem is in overly precise parcels- will ogr simplify them, or python?  
+
+Is there a way to view vertices in qgis?   
+Yes, click on the pencil to enable editing, then red x's appear at vertices.
+
+How about filtering based on area?  
+Screen out parks and similar that are less useful.
+
+ogr2ogr -where "Shape_area<30000"  -t_srs EPSG:4326 -select Shape_area,TAX_IMPR,TAX_LNDVAL -clipdst -122.4394 47.478379 -122.217455 47.735444 filter.shp ../parcel_address.shp parcel_address
+
+Instead of processing the entire KC dataset for each of this, create a Seattle only with no filtering:
+
+ogr2ogr -t_srs EPSG:4326 -clipdst -122.4394 47.478379 -122.217455 47.735444 seattle_parcel.shp ../parcel_address.shp parcel_address
+
+Get some error output:
+
+ERROR 1: TopologyException: Input geom 0 is invalid: Self-intersection at or near point 1306471.7205725275 125966.72408644645 at 1306471.7205725275 125966.72408644645
+^[[B^[[BERROR 1: TopologyException: Input geom 0 is invalid: Self-intersection at or near point 1295687.0337478775 196514.39328233138 at 1295687.0337478775 196514.39328233138
+ERROR 1: TopologyException: Input geom 0 is invalid: Self-intersection at or near point 1295277.0759567122 202488.5485786706 at 1295277.0759567122 202488.5485786706
+
+
+
+Could go back to making a static ipython image.
+
 Prop 1 vs. parcel size would be interesting.
 
 
