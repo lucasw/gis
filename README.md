@@ -340,9 +340,11 @@ ogr2ogr -simplify 0.0001 simplified_seattle_parcel.shp ../seattle_parcel.shp sea
 
 That halved the shapefile size (the dbf is still the same and huge, only the other filtering of fields will get that down), try make the tolerance 10x bigger - no change?  Raise to 0.001 makes some polys reall bad (mostly coastlines), but most polys are already simple so don't benefit, and size doesn't shrink much.
 
+ogr2ogr -select Shape_area,TAX_IMPR,TAX_LNDVAL select_seattle_parcel.shp ../simplified_seattle_parcel.shp simplified_seattle_parcel
 
 
 Could go back to making a static ipython image.
+Trying that now, took a few minutes to even load the simplified seattle only parcels.
 
 Prop 1 vs. parcel size would be interesting.
 
