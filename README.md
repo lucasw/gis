@@ -13,7 +13,9 @@ Source Census Data
 
 http://bmander.com/dotmap/methods.html
 
+```
     for i in `seq -w 1 56`; do wget ftp://ftp2.census.gov/geo/tiger/TIGER2010BLKPOPHU/tabblock2010_${i}_pophu.zip; done
+```
 
 TBD - host all the same data in a google drive and link to it here
 
@@ -26,7 +28,9 @@ US53 is Washington State.
 
 https://gist.github.com/anonymous/4385412
 
+```
     sudo apt-get install python-gdal 
+```
     
 ~~python-shapely~~
 
@@ -70,7 +74,9 @@ This is sequence number 0059
 
 Inside the file is a set of long lines, here is one:
 
+```
 ACSSF 201200000 wa  0 59  1 2619995 130819  23551 10544 11151 10766 10056 10422 7834  7573  5916  9527  10258 8051  3180  807 791 392 926139  44349 27841 30469 36923 37541 43490 42770 44774 40626 79924 111635  145771  95680 54006 49756 40584 1037531 58273 33877 31343 34334 35003 39795 36911 41291 37694 81315 110721  152267  117833  77681 78888 70305 525506  32948 39653 40541 39784 37736 34185 31293 28963 26569 45041 50586 50395 26015 14993 13660 13144 2186137 98755 15786 8437  8436  8199  7819  7990  5758  5663  4680  7431  8401  6290  2277  748 555 285 719456  31345 18965 20775 26448 27463 32016 32196 33830 31212 63742 90225 117884  77718 43950 39472 32215 887415  45577 27607 25014 27991 28786 33069 30470 34615 31502 68823 95753 132910  103038  68330 70544 63386 480511  26179 34797 36652 36643 35156 31949 29151 26821 24865 41857 47249 46715 23701 13920 12575 12281 88888 5320  1321  244 519 462 514 553 343 331 205 253 171 321 61  0 2 20  38623 3831  2490  2331  2952  2792  2727  2026  2593  1809  3004  3445  4307  2024  927 911 454 34907 3985  2293  1628  1669  1332  1871  1602  1819  1567  2703  3256  4511  2969  1713  1270  719 10038 1368  1126  1003  611 559 505 521 480 302 747 802 713 600 185 276 240
+```
 
 The columns range from 'A' to 'HE', which is  'H'*26 + 'E' = 7*26 + 4 = 186
 False leads (insufficient resolution):
@@ -86,8 +92,10 @@ https://pypi.python.org/pypi/sas7bdat
 
 Don't bother with install, just export PYTHONPATH=$PYTHONPATH:. and then run the convert to csv script from the same dir:
 
+```
 :~/other/sas7bdat-0.2.2$ ./scripts/sas7bdat_to_csv ~/own/gis/acs/psam_h53.sas7bdat 
 [psam_h53.csv] wrote 32149 of 32149 lines
+```
 
 The data has a few samples of income per PUMA Public Use Microdata Area "PUMAs are special non-overlapping areas that partition each state into contiguous geographic units containing no fewer than 100,000 people each"
 
@@ -209,7 +217,9 @@ Usage
 
 ipython (1.2.1) 
 
+```
 ipython notebook --pylab inline
+```
 
 Edit parameter values, run all, should get png in current directory.  
 
@@ -253,7 +263,10 @@ parcel_address.shp
 
 The amount of data is very large, filter on POSTALCYTN = SEATTLE or CTYNAME = Seattle - no these don't include everything, try LEVY_JURIS=SEATTLE (more complete but still not all) or KCTP_CTYST=SEATTLE WA (also not complete).  What about zip codes?  Also not complete.  
 
-A boolean combination may be best, in qgis Select By Expression: ( "POSTALCTYN" = 'SEATTLE')  +  ("CTYNAME" = 'Seattle' ) +  "LEVY_JURIS"= 'SEATTLE' + "KCTP_CTYST"='SEATTLE'( "POSTALCTYN" = 'SEATTLE')  +  ("CTYNAME" = 'Seattle' ) +  "LEVY_JURIS"= 'SEATTLE' + "KCTP_CTYST"='SEATTLE' + ("JURIS" = 'SE') (this still isn't working in qgis)
+A boolean combination may be best, in qgis Select By Expression: 
+```
+( "POSTALCTYN" = 'SEATTLE')  +  ("CTYNAME" = 'Seattle' ) +  "LEVY_JURIS"= 'SEATTLE' + "KCTP_CTYST"='SEATTLE'( "POSTALCTYN" = 'SEATTLE')  +  ("CTYNAME" = 'Seattle' ) +  "LEVY_JURIS"= 'SEATTLE' + "KCTP_CTYST"='SEATTLE' + ("JURIS" = 'SE') (this still isn't working in qgis)
+```
 
 Maybe just boundary clipping.
 
@@ -280,11 +293,15 @@ The semi-major axis of the ellipsoid used is 6378137.0.
 The flattening of the ellipsoid used is 1/298.257222101."
 
 Convert to EPSG:4326 - WGS 84 (Seattle zoning map), or EPSG:4269 - NAD83 (Census) ?
+```
 From USER:100000 -  * Generated CRS (+proj=lcc +lat_1=47.5 +lat_2=48.73333333333333 +lat_0=47 +lon_0=-120.8333333333333 +x_0=500000.0000000001 +y_0=0 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=us-ft +no_defs)
+```
 
 What happens during conversion to geojson with no parameters, does it do the right thing with coordinates?  
 
+```
   ogr2ogr -f "GeoJSON" kc_parcels.json ../parcel_address.shp parcel_address
+```
 
 No it doesn't, also it is huge.
 
@@ -302,17 +319,23 @@ Seattle rough bounding lat/long
   47.735444 -122.4394
   47.478379 -122.217455
 
+```
   ogr2ogr -f "GeoJSON" -t_srs EPSG:4326 -clipdst -122.4394 47.478379 -122.217455 47.735444 park_property.json ../park_property.shp park_property
+```
 
 Now try it on big kc_property shapefile:
   
+```
   ogr2ogr -f "GeoJSON" -t_srs EPSG:4326 -clipdst -122.4394 47.478379 -122.217455 47.735444 seattle_parcels.json ../parcel_address.shp parcel_address
+```
 
 Still nearly 500 MB, loads very slow in qgis.  Would take a ton of work to make this interactive in google maps with level-of-detail paging algorithms.
 
 Why is it so large compared to census data, the entire state there was only 200 MB.  Are there too many data fields?  Could screen out all features except for Shape_area or a few other.  Are the polygons too detailed?
 
+```
   ogr2ogr -f "GeoJSON" -select Shape_area,TAX_IMPR,TAX_LNDVAL -t_srs EPSG:4326 -clipdst -122.4394 47.478379 -122.217455 47.735444 seattle_parcels2.json ../parcel_address.shp parcel_address
+```
 
 The above field selection only shrinks the 500 MB down to 200 MB, the problem is in overly precise parcels- will ogr simplify them, or python?  
 
@@ -322,29 +345,71 @@ Yes, click on the pencil to enable editing, then red x's appear at vertices.
 How about filtering based on area?  
 Screen out parks and similar that are less useful.
 
+```
 ogr2ogr -where "Shape_area<30000"  -t_srs EPSG:4326 -select Shape_area,TAX_IMPR,TAX_LNDVAL -clipdst -122.4394 47.478379 -122.217455 47.735444 filter.shp ../parcel_address.shp parcel_address
+```
 
 Instead of processing the entire KC dataset for each of this, create a Seattle only with no filtering:
 
+```
 ogr2ogr -t_srs EPSG:4326 -clipdst -122.4394 47.478379 -122.217455 47.735444 seattle_parcel.shp ../parcel_address.shp parcel_address
+```
 
 Get some error output:
 
+```
 ERROR 1: TopologyException: Input geom 0 is invalid: Self-intersection at or near point 1306471.7205725275 125966.72408644645 at 1306471.7205725275 125966.72408644645
 ^[[B^[[BERROR 1: TopologyException: Input geom 0 is invalid: Self-intersection at or near point 1295687.0337478775 196514.39328233138 at 1295687.0337478775 196514.39328233138
 ERROR 1: TopologyException: Input geom 0 is invalid: Self-intersection at or near point 1295277.0759567122 202488.5485786706 at 1295277.0759567122 202488.5485786706
+```
 
 Simplify:
 
-ogr2ogr -simplify 0.0001 simplified_seattle_parcel.shp ../seattle_parcel.shp seattle_parcel
+```
+ogr2ogr -simplify 0.00001 simplified_seattle_parcel.shp ../seattle_parcel.shp seattle_parcel
+```
 
-That halved the shapefile size (the dbf is still the same and huge, only the other filtering of fields will get that down), try make the tolerance 10x bigger - no change?  Raise to 0.001 makes some polys reall bad (mostly coastlines), but most polys are already simple so don't benefit, and size doesn't shrink much.
+That halved the shapefile size (the dbf is still the same and huge, only the other filtering of fields will get that down), try make the tolerance 10x bigger - no change?  Raise to 0.001 makes some polys really bad (mostly coastlines), but most polys are already simple so don't benefit, and size doesn't shrink much.
 
-ogr2ogr -select Shape_area,TAX_IMPR,TAX_LNDVAL select_seattle_parcel.shp ../simplified_seattle_parcel.shp simplified_seattle_parcel
+On closer look even 0.0001 is too much, small lots lose corners, lower to 0.00001.
 
+TBD combine the following with the simplification:
+
+TBD get rid of MINOR=HYDR
+
+```
+ogr2ogr -where "MINOR!='HYDR'" -select Shape_area,TAX_IMPR,TAX_LNDVAL select_seattle_parcel.shp ../simplified_seattle_parcel.shp simplified_seattle_parcel
+```
 
 Could go back to making a static ipython image.
 Trying that now, took a few minutes to even load the simplified seattle only parcels.
+
+Trying to draw the 200,000 Seattle parcels with python patches takes way too much time, once 8 gigs of ram are met it doesn't seem to ever end after hitting about 168,000 parcels.  
+Need to tile the images, make sure the plots aren't autoscaling, set them directly.
+
+Also can filter down Seattle to core area, want less than 100k parcels:
+
+```
+ogr2ogr -clipdst -122.43 47.53 -122.22 47.67 seattle_parcel_subset.shp ../select_seattle_parcel.shp select_seattle_parcel
+```
+
+Off-screen rendering
+--------------------
+
+```
+/usr/lib/pymodules/python2.7/matplotlib/__init__.py:1173: UserWarning:  This call to matplotlib.use() has no effect
+because the backend has already been chosen;
+matplotlib.use() must be called *before* pylab, matplotlib.pyplot,
+or matplotlib.backends is imported for the first time.
+
+  warnings.warn(_use_error_msg)
+```
+
+Start ipython notebook without pylab:
+
+```
+  ipython notebook
+```
 
 Prop 1 vs. parcel size would be interesting.
 
@@ -358,19 +423,23 @@ These have shape_areas, presumably these are square meters?
 
 Problems with ipython crashing when trying to get points- Ipython dies with no error, but trying to duplicate in regular python leads to::
 
+```
   >>> geom= feat.GetGeometryRef()
   >>> geom
   <osgeo.ogr.Geometry; proxy of <Swig Object of type 'OGRGeometryShadow *' at 0x7fc5103c2e10> >
   >>> pts = geom.GetPoints()
   ERROR 6: Incompatible geometry for operation
+```
 
 So far I've discovered some geoms like in the street network can directly provide points with GetPoints(), while others in the census and voting district shape files require::
  
+```
   >>> ch = geom.ConvexHull()
   >>> bd = ch.GetBoundary()
   >>> pts = bd.GetPoints()
   >>> pts
   [(1347198.0200866014, 257822.7410414368), (1347169.633004278, 257894.8399786055), (1347151.2829753608, 257941.446840778),...
+```
 
 Unfortunately this is just the points of the convex hull, which worked okay for rectangular census blocks but not complex voting districts.  So skip the convex hull part, and do bd = geom.GetBoundary- this works.
 
