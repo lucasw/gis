@@ -35,6 +35,9 @@ In order to get this into json, could output a json with features that have volu
 If not then need to create inflated shapes from them, should be easy geometric function for that, then write those into the json.
 
 How were the json files made for http://lucasw.github.io/gmap/census.html?
+Those were a straight conversion from shp, no extra data was put into them.
+
+Have a small json test file (Also no extra data), see if a gmap viewer can be made for it.
 
 Tools
 =====
