@@ -3,6 +3,39 @@ gis
 
 GIS stuff, play with openstreetmap, U.S. census, data.seattle.gov data.
 
+Posts
+=====
+
+https://plus.google.com/103190342755104432973/posts/5UnDuAHcDLV
+https://plus.google.com/103190342755104432973/posts/QCHe9er2KnP
+https://plus.google.com/103190342755104432973/posts/JCoXRYva3zR
+https://plus.google.com/103190342755104432973/posts/QHkUDUrEQyQ
+https://plus.google.com/103190342755104432973/posts/jUdxLiqqb3P
+
+Traffic Volumes:
+https://plus.google.com/103190342755104432973/posts/GFAts9rkDys
+
+https://plus.google.com/103190342755104432973/posts/7nPrnygsHif
+https://plus.google.com/103190342755104432973/posts/g1grYpy74e9
+https://plus.google.com/103190342755104432973/posts/A9eHVJ82fj1
+https://plus.google.com/103190342755104432973/posts/7uNXwKJYkCn
+https://plus.google.com/103190342755104432973/posts/2LyKmWJxavh
+https://plus.google.com/103190342755104432973/posts/ZCv8tkg7aTC
+
+
+Todo
+====
+
+Take traffic volumes and output a json file with all the data in it, then make a gmap viewer in javascript.
+
+Could have complete history of each street in the json.
+
+The current traffic_volume.ipynb creates an image using street network points from the street network shapefile.  
+In order to get this into json, could output a json with features that have volume data, but the streets are all lines- will these be clickable in a browser?
+If not then need to create inflated shapes from them, should be easy geometric function for that, then write those into the json.
+
+How were the json files made for http://lucasw.github.io/gmap/census.html?
+
 Tools
 =====
 
